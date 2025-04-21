@@ -2,11 +2,11 @@
 title: "Science and Trust"
 format:
   dashboard:
-    orientation: columns
+    orientation: rows
     nav-buttons: [linkedin, github]
     linkedin: www.linkedin.com/in/jacob-u-perez
     github: https://github.com/jacobperez-debug
-    theme: flatly
+    theme: journal
 ---
 
 ```{r}
@@ -52,7 +52,7 @@ df_wgm2020 <- wgm2020 %>%
     Global11Regions %in% c(11) ~ "Middle East and Africa",
     Global11Regions %in% c(9, 10) ~ "Americas",
     Global11Regions %in% c(4, 6, 7, 8, 5) ~ "Asia",
-    Global11Regions %in% c(3) ~ "Russia",
+    Global11Regions %in% c(3) ~ "Russia/Caucasus/Central",
     Global11Regions %in% c(1, 2) ~ "Europe"
   )) %>%
   select(COUNTRYNEW, region, WGT, W5B, W5C, W8)
@@ -60,51 +60,15 @@ df_wgm2020 <- wgm2020 %>%
 
 # Trust in Science
 
-## Global Trust in Scientists Facts
+## Global Trust in Scientists Facts (Row 1) {height = 10%}
+
 Explore how attitudes toward scientists and scientific information shifted between 2018 and 2020.
 
-### Card 1
+## Global Trust in Scientists Plots (Row 2) 
 
-% globally who trust scientists
+### 2018 {.tabset}
 
-```{r}
-df_wgm2018 %>%
-  filter(!is.na(Q11C)) %>%
-  summarise(
-    trust_percent = 100 * sum(wgt[Q11C %in% c(1, 2)]) / sum(wgt)
-  )
-```
-
-```{r}
-df_wgm2020 %>%
-  filter(!is.na(W5C)) %>%
-  summarise(
-    trust_percent = 100 * sum(WGT[W5C %in% c(1, 2)]) / sum(WGT)
-  )
-```
-
-### Card 2
-% who trust in national government advice
-
-```{r}
-df_wgm2018 %>%
-  filter(!is.na(Q11B)) %>%
-  summarise(
-    trust_percent = 100 * sum(wgt[Q11B %in% c(1, 2)]) / sum(wgt)
-  )
-```
-
-```{r}
-df_wgm2020 %>%
-  filter(!is.na(W5B)) %>%
-  summarise(
-    trust_percent = 100 * sum(WGT[W5B %in% c(1, 2)]) / sum(WGT)
-  )
-```
-
-## Global Trust in Scientists Plots {.tabset}
-
-### 2018
+#### Global
 
 ```{r}
 trust2018 <- df_wgm2018 %>%
@@ -120,21 +84,137 @@ trust2018 <- df_wgm2018 %>%
 ```
 
 ```{r}
-ggplot(trust2018, aes(x = percent, y = country_name, color = region)) +
-  geom_point() +
+ggplot(trust2018, aes(x = percent)) +
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
   labs(
-    title = "Percent of Trust for each Country",
-    x = "% of Responses (Weighted)",
-    y = "Country",
-    color = "Region"
-  ) +
-  theme_minimal() +
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
   theme(
-    axis.text.y = element_blank()
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
   )
 ```
 
-### 2020
+#### Africa
+
+```{r}
+trust2018 %>% 
+  filter(region == "Africa") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+#### Americas
+
+```{r}
+trust2018 %>% 
+  filter(region == "Americas") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+#### Asia
+
+```{r}
+trust2018 %>% 
+  filter(region == "Asia") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+#### Europe
+
+```{r}
+trust2018 %>% 
+  filter(region == "Europe") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+#### Former Soviet Union
+
+```{r}
+trust2018 %>% 
+  filter(region == "Former Soviet Union") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+#### Middle East and North Africa
+
+```{r}
+trust2018 %>% 
+  filter(region == "Middle East and North Africa") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+### 2020 {.tabset}
+
+#### Global 
 
 ```{r}
 trust2020 <- df_wgm2020 %>%
@@ -150,21 +230,198 @@ trust2020 <- df_wgm2020 %>%
 ```
 
 ```{r}
-ggplot(trust2020, aes(x = percent, y = COUNTRYNEW, color = region)) +
-  geom_point() +
+ggplot(trust2020, aes(x = percent)) +
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
   labs(
-    title = "Percent of Trust for each Country",
-    x = "% of Responses (Weighted)",
-    y = "Country",
-    color = "Region"
-  ) +
-  theme_minimal() +
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
   theme(
-    axis.text.y = element_blank()
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
   )
 ```
 
-# Does Science Benefit your People
+#### Americas
+
+```{r}
+trust2020 %>% 
+  filter(region == "Americas") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+#### Asia
+
+```{r}
+trust2020 %>% 
+  filter(region == "Asia") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+#### Europe
+
+```{r}
+trust2020 %>% 
+  filter(region == "Europe") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+#### Middle East and Africa
+
+```{r}
+trust2020 %>% 
+  filter(region == "Middle East and Africa") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+#### Russia/Caucasus/Central
+
+```{r}
+trust2020 %>% 
+  filter(region == "Russia/Caucasus/Central") %>%
+  ggplot(aes(x = percent)) + 
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Percentages",
+    x = "% of Responses",
+    y = NULL
+  ) + 
+  theme_minimal() + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+## Global Trust in Scientists Cards (Row 3)
+
+### Card 1 {orientation = "columns"}
+
+#### Facts {orientation = "columns}
+
+```{r}
+trusted_by_2018 <- df_wgm2018 %>%
+  filter(!is.na(Q11C)) %>%
+  mutate(
+    trusted = if_else(Q11C %in% c(1, 2), 1, 0),
+    weighted_trusted = wgt * trusted
+  ) %>%
+  group_by(region) %>%
+  summarise(
+    percent_trusted = 100 * sum(weighted_trusted, na.rm = TRUE) / sum(wgt, na.rm = TRUE)
+  ) %>%
+  mutate(
+    Percent = round(percent_trusted, 2),
+    Region = region
+  ) %>%
+  select(Region, Percent)
+
+knitr::kable(trusted_by_2018)
+```
+
+### Card 2 
+
+```{r}
+#| content: valuebox
+#| title: "% in 2018"
+
+value1 <- df_wgm2018 %>%
+  filter(!is.na(Q11C)) %>%
+  summarise(
+    trust_percent = 100 * sum(wgt[Q11C %in% c(1, 2)]) / sum(wgt)
+  )
+
+list(
+  icon = "heart-pulse",
+  value = round(value1$trust_percent, 2)
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "% in 2020"
+
+value2 <- df_wgm2020 %>%
+  filter(!is.na(W5C)) %>%
+  summarise(
+    trust_percent = 100 * sum(WGT[W5C %in% c(1, 2)]) / sum(WGT)
+  )
+
+list(
+  icon = "virus",
+  value = round(value2$trust_percent, 2)
+)
+```
+
+### Card 3 
+
+```{r}
+trusted_by_2020 <- df_wgm2020 %>%
+  filter(!is.na(W5C)) %>%
+  mutate(
+    trusted = if_else(W5C %in% c(1, 2), 1, 0),
+    weighted_trusted = WGT * trusted
+  ) %>%
+  group_by(region) %>%
+  summarise(
+    percent_trusted = 100 * sum(weighted_trusted, na.rm = TRUE) / sum(WGT, na.rm = TRUE)
+  ) %>%
+  mutate(
+    Percent = round(percent_trusted, 2),
+    Region = region
+  ) %>%
+  select(Region, Percent)
+
+knitr::kable(trusted_by_2020)
+```
+
+# Is Science Beneficial
 
 ## Vaccine Confidence Intro
 How did belief in science benefiting your country change before and during the COVID-19 pandemic?
