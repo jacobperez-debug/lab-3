@@ -28,13 +28,13 @@ wgm2020 <- read.csv(here::here("wgm_full_wave2_public_file_final (1)_csv.csv"))
 ```
 
 ```{r}
-df_raw <- tibble(x = str_split(wgm2018.3$`Variable Type & Codes*`[1], ',\\s')[[1]])
+df_raw_2018 <- tibble(x = str_split(wgm2018.3$`Variable Type & Codes*`[1], ',\\s')[[1]])
 
-df_countries <- df_raw |>
-  separate_wider_delim(x, delim = '=', names = c("country_id", "country_name")) |>
+df_countries_2018 <- df_raw_2018 %>%
+  separate_wider_delim(x, delim = '=', names = c("country_id", "country_name")) %>%
   mutate(country_id = as.numeric(country_id))
 
-df_wgm2018 <-  left_join(wgm2018, df_countries, by = c("WP5" = "country_id")) |>
+df_wgm2018 <-  left_join(wgm2018, df_countries_2018, by = c("WP5" = "country_id")) %>%
   mutate(region = case_when(
     Regions_Report %in% c(1, 2, 4, 5) ~ "Africa",
     Regions_Report %in% c(6, 7, 8) ~ "Americas",
@@ -42,7 +42,20 @@ df_wgm2018 <-  left_join(wgm2018, df_countries, by = c("WP5" = "country_id")) |>
     Regions_Report %in% c(3, 13) ~ "Middle East and North Africa",
     Regions_Report %in% c(14) ~ "Former Soviet Union",
     Regions_Report %in% c(15, 16, 17, 0) ~ "Europe"
-  ))
+  )) %>%
+  select(country_name, region, wgt, Q11B, Q11C, Q16)
+```
+
+```{r}
+df_wgm2020 <- wgm2020 %>%
+  mutate(region = case_when(
+    Global11Regions %in% c(11) ~ "Middle East and Africa",
+    Global11Regions %in% c(9, 10) ~ "Americas",
+    Global11Regions %in% c(4, 6, 7, 8, 5) ~ "Asia",
+    Global11Regions %in% c(3) ~ "Russia",
+    Global11Regions %in% c(1, 2) ~ "Europe"
+  )) %>%
+  select(COUNTRYNEW, region, WGT, W5B, W5C, W8)
 ```
 
 # Trust in Science
@@ -51,31 +64,110 @@ df_wgm2018 <-  left_join(wgm2018, df_countries, by = c("WP5" = "country_id")) |>
 Explore how attitudes toward scientists and scientific information shifted between 2018 and 2020.
 
 ### Card 1
+
 % globally who trust scientists
 
+```{r}
+df_wgm2018 %>%
+  filter(!is.na(Q11C)) %>%
+  summarise(
+    trust_percent = 100 * sum(wgt[Q11C %in% c(1, 2)]) / sum(wgt)
+  )
+```
+
+```{r}
+df_wgm2020 %>%
+  filter(!is.na(W5C)) %>%
+  summarise(
+    trust_percent = 100 * sum(WGT[W5C %in% c(1, 2)]) / sum(WGT)
+  )
+```
+
 ### Card 2
-% who trust government health advice
+% who trust in national government advice
+
+```{r}
+df_wgm2018 %>%
+  filter(!is.na(Q11B)) %>%
+  summarise(
+    trust_percent = 100 * sum(wgt[Q11B %in% c(1, 2)]) / sum(wgt)
+  )
+```
+
+```{r}
+df_wgm2020 %>%
+  filter(!is.na(W5B)) %>%
+  summarise(
+    trust_percent = 100 * sum(WGT[W5B %in% c(1, 2)]) / sum(WGT)
+  )
+```
 
 ## Global Trust in Scientists Plots {.tabset}
 
 ### 2018
 
 ```{r}
-1 + 1
+trust2018 <- df_wgm2018 %>%
+  filter(!is.na(Q11C)) %>%
+  mutate(
+    is_1_or_2 = if_else(Q11C %in% c(1, 2), 1, 0),
+    weighted_is_1_or_2 = wgt * is_1_or_2
+  ) %>%
+  group_by(country_name, region) %>%
+  summarise(
+    percent = 100 * sum(weighted_is_1_or_2, na.rm = TRUE) / sum(wgt, na.rm = TRUE)
+  )
+```
+
+```{r}
+ggplot(trust2018, aes(x = percent, y = country_name, color = region)) +
+  geom_point() +
+  labs(
+    title = "Percent of Trust for each Country",
+    x = "% of Responses (Weighted)",
+    y = "Country",
+    color = "Region"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank()
+  )
 ```
 
 ### 2020
 
 ```{r}
-#| echo: false
-2 * 2
+trust2020 <- df_wgm2020 %>%
+  filter(!is.na(W5C)) %>%
+  mutate(
+    is_1_or_2 = if_else(W5C %in% c(1, 2), 1, 0),
+    weighted_is_1_or_2 = WGT * is_1_or_2
+  ) %>%
+  group_by(COUNTRYNEW, region) %>%
+  summarise(
+    percent = 100 * sum(weighted_is_1_or_2, na.rm = TRUE) / sum(WGT, na.rm = TRUE)
+  )
 ```
 
+```{r}
+ggplot(trust2020, aes(x = percent, y = COUNTRYNEW, color = region)) +
+  geom_point() +
+  labs(
+    title = "Percent of Trust for each Country",
+    x = "% of Responses (Weighted)",
+    y = "Country",
+    color = "Region"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank()
+  )
+```
 
-# Vaccine Confidence
+# Does Science Benefit your People
 
 ## Vaccine Confidence Intro
-How did confidence in vaccine safety and effectiveness change before and during the COVID-19 pandemic?
+How did belief in science benefiting your country change before and during the COVID-19 pandemic?
 
 ### 2018 vs 2020
 
@@ -86,6 +178,7 @@ How did confidence in vaccine safety and effectiveness change before and during 
 ```
 
 ### Regional Breakdown
+
 ```{r}
 ## grouped bar plot: vaccine trust by region
 
