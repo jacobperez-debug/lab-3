@@ -1,0 +1,104 @@
+---
+title: "Science and Trust"
+format:
+  dashboard:
+    orientation: columns
+    nav-buttons: [linkedin, github]
+    linkedin: www.linkedin.com/in/jacob-u-perez
+    github: https://github.com/jacobperez-debug
+    theme: flatly
+---
+
+```{r}
+#|label: libraries
+
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+```
+
+```{r}
+#|label: read in data
+
+wgm2018 <- read_excel(here::here("wgm2018-dataset-crosstabs-all-countries.xlsx"), sheet = 2)
+
+wgm2018.3 <- read_excel(here::here("wgm2018-dataset-crosstabs-all-countries.xlsx"), sheet = 3)
+
+wgm2020 <- read.csv(here::here("wgm_full_wave2_public_file_final (1)_csv.csv"))
+```
+
+```{r}
+df_raw <- tibble(x = str_split(wgm2018.3$`Variable Type & Codes*`[1], ',\\s')[[1]])
+
+df_countries <- df_raw |>
+  separate_wider_delim(x, delim = '=', names = c("country_id", "country_name")) |>
+  mutate(country_id = as.numeric(country_id))
+
+df_wgm2018 <-  left_join(wgm2018, df_countries, by = c("WP5" = "country_id")) |>
+  mutate(region = case_when(
+    Regions_Report %in% c(1, 2, 4, 5) ~ "Africa",
+    Regions_Report %in% c(6, 7, 8) ~ "Americas",
+    Regions_Report %in% c(9, 10, 11, 12, 18) ~ "Asia",
+    Regions_Report %in% c(3, 13) ~ "Middle East and North Africa",
+    Regions_Report %in% c(14) ~ "Former Soviet Union",
+    Regions_Report %in% c(15, 16, 17, 0) ~ "Europe"
+  ))
+```
+
+# Trust in Science
+
+## Global Trust in Scientists Facts
+Explore how attitudes toward scientists and scientific information shifted between 2018 and 2020.
+
+### Card 1
+% globally who trust scientists
+
+### Card 2
+% who trust government health advice
+
+## Global Trust in Scientists Plots {.tabset}
+
+### 2018
+
+```{r}
+1 + 1
+```
+
+### 2020
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+
+# Vaccine Confidence
+
+## Vaccine Confidence Intro
+How did confidence in vaccine safety and effectiveness change before and during the COVID-19 pandemic?
+
+### 2018 vs 2020
+
+```{r}
+#ggplot: bar chart or line comparing global % across years
+
+2+1
+```
+
+### Regional Breakdown
+```{r}
+## grouped bar plot: vaccine trust by region
+
+3*3
+```
+
+## Global Map
+
+```{r}
+# Leaflet map: shade countries by % who agree vaccines are safe
+
+5+5
+```
+
+
+
