@@ -20,6 +20,7 @@ library(rnaturalearth)
 library(rnaturalearthdata)
 library(sf)
 library(leaflet)
+library(RColorBrewer)
 ```
 
 ```{r}
@@ -68,13 +69,11 @@ df_wgm2020 <- wgm2020 %>%
 
 ## Global Trust in Scientists Facts (Row 1) 
 
-Explore how attitudes toward scientists and scientific information shifted between 2018 and 2020.
+Explore how attitudes toward scientists and scientific information shifted between 2018 and 2020. The first two graphs explore the overall distribution of percentages of trust in science for each region. The tables reflect the overall average percentage in each region, left representing 2018 and the right representing 2020. Finally, the blue cards in the middle indicate the global average of trust in scientists, further drawing light towards a slight increase from the year 2018 to 2020. 
 
 ## Global Trust in Scientists Plots (Row 2) {height = 70%}
 
-### 2018 {.tabset .tabset-dropdown}
-
-#### Global
+### 2018
 
 ```{r}
 trust2018 <- df_wgm2018 %>%
@@ -86,141 +85,31 @@ trust2018 <- df_wgm2018 %>%
   group_by(country_name, region) %>%
   summarise(
     percent = 100 * sum(weighted_is_1_or_2, na.rm = TRUE) / sum(wgt, na.rm = TRUE)
+  ) %>%
+  mutate(
+    region = as.factor(region)
   )
 ```
 
 ```{r}
-ggplot(trust2018, aes(x = percent)) +
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
+ggplot(trust2018, aes(x = percent, fill = region)) +
+  geom_density(alpha = 0.8, color = "white") +
   labs(
-    title = "Distribution of Percentages",
+    title = "Distribution of Percentages in 2018",
     x = "% of Responses",
-    y = NULL
+    y = NULL,
+    fill = "Region"
   ) + 
   theme_minimal() + 
   theme(
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Africa
-
-```{r}
-trust2018 %>% 
-  filter(region == "Africa") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
   ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+  scale_fill_brewer(palette = "Dark2")
 ```
 
-#### Americas
-
-```{r}
-trust2018 %>% 
-  filter(region == "Americas") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Asia
-
-```{r}
-trust2018 %>% 
-  filter(region == "Asia") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Europe
-
-```{r}
-trust2018 %>% 
-  filter(region == "Europe") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Former Soviet Union
-
-```{r}
-trust2018 %>% 
-  filter(region == "Former Soviet Union") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Middle East and North Africa
-
-```{r}
-trust2018 %>% 
-  filter(region == "Middle East and North Africa") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-### 2020 {.tabset .tabset-dropdown}
-
-#### Global 
+### 2020 
 
 ```{r}
 trust2020 <- df_wgm2020 %>%
@@ -236,132 +125,21 @@ trust2020 <- df_wgm2020 %>%
 ```
 
 ```{r}
-ggplot(trust2020, aes(x = percent)) +
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
+ggplot(trust2020, aes(x = percent, fill = region)) +
+  geom_density(alpha = 0.8, color = "white") +
   labs(
-    title = "Distribution of Percentages",
+    title = "Distribution of Percentages in 2020",
     x = "% of Responses",
-    y = NULL
+    y = NULL,
+    fill = "Region"
   ) + 
   theme_minimal() + 
   theme(
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Africa
-
-```{r}
-trust2020 %>% 
-  filter(region == "Africa") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
   ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Americas
-
-```{r}
-trust2020 %>% 
-  filter(region == "Americas") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Asia
-
-```{r}
-trust2020 %>% 
-  filter(region == "Asia") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Europe
-
-```{r}
-trust2020 %>% 
-  filter(region == "Europe") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Middle East and North Africa
-
-```{r}
-trust2020 %>% 
-  filter(region == "Middle East and North Africa") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-```
-
-#### Russia/Caucasus/Central
-
-```{r}
-trust2020 %>% 
-  filter(region == "Russia/Caucasus/Central") %>%
-  ggplot(aes(x = percent)) + 
-  geom_histogram(binwidth = 3, fill = "#65a345", color = "white") +
-  labs(
-    title = "Distribution of Percentages",
-    x = "% of Responses",
-    y = NULL
-  ) + 
-  theme_minimal() + 
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  )
+  scale_fill_brewer(palette = "Dark2")
 ```
 
 ## Global Trust in Scientists Cards (Row 3)
@@ -479,7 +257,7 @@ trust_change <- trust2020_clean %>%
 ```
 
 
-## Global Map (Row 1) {height = 70%}
+## Global Map (Row 1) {height = "70%"}
 
 ```{r}
 # I used ChatGPT to help me write this code chunk
@@ -502,13 +280,14 @@ leaflet(world_trust) %>%
     popup = ~paste0("<strong>", name, "</strong><br>",
                     "Trust Change: ", round(change, 2), "%")
   ) %>%
+  setView(lng = 15, lat = 20, zoom = 2) %>%
   addLegend(pal = pal, values = ~change, title = "Change in Trust (2018–2020)")
 
 ```
 
-## Country Trust Tables and Cards (Row 2) {height = 30%}
+## Country Trust Tables and Cards (Row 2)
 
-### Country Tables {orientation = "column}
+### Country Tables {orientation = "column"}
 
 ```{r}
 #| message: false
